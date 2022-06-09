@@ -34,7 +34,7 @@ export default function Navigation({
   onSelect,
 }: {
   selected: string;
-  onSelect: (item: string) => void;
+  onSelect: (item: "table" | "detail") => void;
 }) {
   return (
     <NavBar>

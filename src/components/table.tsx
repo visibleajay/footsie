@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import ImportTableModal from "./import-table-modal";
 
 const TableContainer = styled.div`
   display: flex;
@@ -13,5 +14,9 @@ const TableContainer = styled.div`
 `;
 
 export default function Table() {
-  return <TableContainer />;
+  return (
+    <TableContainer>
+
+    </TableContainer>
+  );
 }

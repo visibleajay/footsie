@@ -1,7 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import styled from "styled-components";
+import { useModal } from "../context/ModalProvider";
+import ImportTableModal from "./import-table-modal";
+import { ModalProvider } from "../context/ModalProvider";
 
 const InputContainer = styled.div`
   display: flex;
@@ -45,17 +48,14 @@ const Button = styled.button`
   height: 44px;
 `;
 
-export default function TableProps() {
-  const display = (val: string) => {
-    console.log({ val });
-  };
+export default function TableProps({ onOpen }: { onOpen: () => void }) {
   return (
-    <div style={{display: "flex", flexDirection: "row"}}>
+    <div style={{ display: "flex", flexDirection: "row" }}>
       <InputContainer>
         <FontAwesomeIcon icon={["fas", "magnifying-glass"]} />
         <Input placeholder="Find Player" />
       </InputContainer>
-      <Button onClick={() => display("Import Team Modal")}>Import Team</Button>
+      <Button onClick={onOpen}>Import Team</Button>
     </div>
   );
 }
