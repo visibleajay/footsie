@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import ImportTableModal from "./components/import-table-modal";
+import ImportTableModal from "./components/modals/import-table-modal";
 import Navigation from "./components/navigation";
 import PlayerOnField from "./components/player-on-field";
 import Table from "./components/table";

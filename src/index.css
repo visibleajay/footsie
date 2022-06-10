@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600");
 
 /* Variables */
 :root {
@@ -23,9 +24,18 @@
   --font-family-poppins: "Poppins";
 }
 
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+}
+
 body {
   margin: 0;
-  box-sizing: border-box;
+  
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

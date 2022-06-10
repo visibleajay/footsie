@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useState, useRef } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 interface ModalContextData {
   showModal: boolean;
-  closeModalOverlay: (e: React.MouseEvent<Element, MouseEvent>) => void;
-  modalRef: any;
   openModal: () => void;
   closeModal: () => void;
 }
@@ -11,7 +9,6 @@ interface ModalContextData {
 const ModalContext = createContext<ModalContextData>({} as ModalContextData);
 
 const ModalProvider = ({ children }: { children: JSX.Element }) => {
-  const modalRef = useRef();
 
   const [showModal, setShowModal] = useState(false);
 
@@ -23,15 +20,9 @@ const ModalProvider = ({ children }: { children: JSX.Element }) => {
     setShowModal(false);
   };
 
-  const closeModalOverlay = (e: React.MouseEvent<Element, MouseEvent>) => {
-    if (modalRef.current === e.target) {
-      setShowModal(false);
-    }
-  };
-
   return (
     <ModalContext.Provider
-      value={{ showModal, openModal, closeModal, modalRef, closeModalOverlay }}
+      value={{ showModal, openModal, closeModal }}
     >
       {children}
     </ModalContext.Provider>

@@ -2,9 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import styled from "styled-components";
-import { useModal } from "../context/ModalProvider";
-import ImportTableModal from "./import-table-modal";
-import { ModalProvider } from "../context/ModalProvider";
+import { ImportBTN } from "../common/component";
 
 const InputContainer = styled.div`
   display: flex;
@@ -12,7 +10,7 @@ const InputContainer = styled.div`
   position: relative;
   border: 1px solid var(--bordersdefault);
   border-radius: 8px;
-  height: 21px;
+  height: 44px;
   min-width: 248px;
   padding: 11px 16px;
 
@@ -33,21 +31,6 @@ const Input = styled.input`
   background: inherit;
 `;
 
-const Button = styled.button`
-  display: flex;
-  align-items: flex-start;
-  background-color: var(--primaryorange);
-  border-radius: 8px;
-  cursor: pointer;
-  margin-left: 8px;
-  overflow: hidden;
-  padding: 11px 20px;
-  width: 132px;
-  color: var(--textheadings);
-  font-weight: 500;
-  height: 44px;
-`;
-
 export default function TableProps({ onOpen }: { onOpen: () => void }) {
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
@@ -55,7 +38,7 @@ export default function TableProps({ onOpen }: { onOpen: () => void }) {
         <FontAwesomeIcon icon={["fas", "magnifying-glass"]} />
         <Input placeholder="Find Player" />
       </InputContainer>
-      <Button onClick={onOpen}>Import Team</Button>
+      <ImportBTN onClick={onOpen}>Import Team</ImportBTN>
     </div>
   );
 }
