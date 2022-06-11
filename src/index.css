@@ -33,6 +33,13 @@
   line-height: 21px;
 }
 
+@font-face {
+  font-family: "Font Awesome 6 Free-Solid";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.css");
+}
+
 body {
   margin: 0;
   

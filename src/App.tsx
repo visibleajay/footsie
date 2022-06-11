@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useAppSelector } from "./app/hooks";
+import { selectTableView } from "./app/store/footballManagerSlice";
 import ImportTableModal from "./components/modals/import-table-modal";
 import Navigation from "./components/navigation";
 import PlayerOnField from "./components/player-on-field";
@@ -30,6 +32,9 @@ const TopViewContainer = styled.div`
 function App() {
   const [view, setView] = useState<"table" | "detail" | "importFile">("table");
 
+  const isFileUpload = useAppSelector(selectTableView);
+
+  console.log({ isFileUpload });
   return (
     <ModalProvider>
       <AppContainer>
@@ -37,12 +42,17 @@ function App() {
         <RightViewContainer style={{ flex: 1 }}>
           <TopViewContainer>
             <TeamName />
-            <TableProps onOpen={() => setView("importFile")} />
+            <TableProps
+              isFileUpload={isFileUpload}
+              onOpen={() => setView("importFile")}
+            />
           </TopViewContainer>
-          {(view === "table" || view === "importFile") && <Table />}
-          {view === "detail" && <PlayerOnField />}
+          {(view === "table" || view === "importFile") && (
+            <Table isFileUpload={isFileUpload} />
+          )}
+          {view === "detail" && <PlayerOnField isFileUpload={isFileUpload} />}
           <ImportTableModal
-            setView={() => setView("table")}
+            onClose={() => setView("table")}
             isOpen={view === "importFile"}
           />
         </RightViewContainer>

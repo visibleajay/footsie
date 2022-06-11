@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { CellProps, Column, useTable } from "react-table";
@@ -27,8 +27,15 @@ const TableContainer = styled.div`
   }
 `;
 
-export default function Table() {
-  // @ts-ignore
+const NoImportBody = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 40%;
+  color: var(--textnormal);
+  text-align: center;
+`;
+
+export default function Table({ isFileUpload }: { isFileUpload: boolean }) {
   const columns: Column<IPlayer>[] = React.useMemo(
     () => [
       {
@@ -46,44 +53,54 @@ export default function Table() {
             </span>
           );
         },
+        id: "player_name",
       },
       {
         Header: "Jersey Number",
         accessor: "jersey_number" as keyof IPlayer,
+        id: "jersey_number",
       },
       {
         Header: "Starter",
         accessor: "starter" as keyof IPlayer,
+        id: "starter",
       },
       {
         Header: "Position",
         accessor: "position" as keyof IPlayer,
+        id: "position",
       },
       {
         Header: "Height",
         accessor: "height" as keyof IPlayer,
+        id: "height",
       },
       {
         Header: "Weight",
         accessor: "weight" as keyof IPlayer,
+        id: "weight",
       },
       {
         Header: "Nationality",
         accessor: "nationality" as keyof IPlayer,
+        id: "nationality",
       },
       {
         Header: "Appearance",
         accessor: "appearance" as keyof IPlayer,
+        id: "appearance",
       },
       {
         Header: "Minutes Played",
         accessor: "minutes_played" as keyof IPlayer,
+        id: "minutes_played",
       },
       {
         Header: "",
         Cell: ({ row }: CellProps<IPlayer>) => {
           const [isOpen, setOpen] = useState(false);
           const { id } = row.original;
+
           return (
             <div style={{ position: "relative" }}>
               <FontAwesomeIcon
@@ -96,11 +113,11 @@ export default function Table() {
                 onClose={() => setOpen(false)}
                 onEdit={() => {
                   setOperation({ name: "edit", id: id + "" });
-                  // setOpen(false);
+                  setOpen(false);
                 }}
                 onDelete={() => {
                   setOperation({ name: "delete", id: id + "" });
-                  // setOpen(false);
+                  setOpen(false);
                 }}
               />
             </div>
@@ -121,6 +138,7 @@ export default function Table() {
     headerGroups, // headerGroups, if your table has groupings
     rows, // rows for the table based on the data passed
     prepareRow,
+    setHiddenColumns,
   } = useTable({
     columns,
     // @ts-ignore
@@ -130,6 +148,12 @@ export default function Table() {
     name: "close" | "edit" | "delete";
     id: string;
   }>({ id: "", name: "close" });
+
+  useEffect(() => {
+    setHiddenColumns(
+      !isFileUpload ? ["starter", "appearance", "minutes_played"] : []
+    );
+  }, [isFileUpload, setHiddenColumns]);
 
   return (
     <>
@@ -167,8 +191,29 @@ export default function Table() {
           </tbody>
         </table>
       </TableContainer>
-      <EditPlayerModal isOpen={operation.name === "edit"} />
-      <DeletePlayerModal isOpen={operation.name === "delete"} />
+      <EditPlayerModal
+        id={operation.id}
+        isOpen={operation.name === "edit"}
+        onClose={() => {
+          setOperation({ name: "close", id: "" });
+        }}
+      />
+      <DeletePlayerModal
+        id={operation.id}
+        isOpen={operation.name === "delete"}
+        onClose={() => {
+          setOperation({ name: "close", id: "" });
+        }}
+      />
+      {!isFileUpload ? (
+        <NoImportBody>
+          <span>You do not have any players on the roster</span>
+          <br />
+          <span style={{ color: "var(--primaryorange)" }}>Import Team</span>
+        </NoImportBody>
+      ) : (
+        ""
+      )}
     </>
   );
 }

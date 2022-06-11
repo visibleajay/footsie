@@ -1,5 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -48,6 +48,7 @@ const MenuItemContainer = styled.div`
   }
 `;
 const Heading = styled.div`
+  font-weight: 600;
   color: var(--textheadings);
 `;
 

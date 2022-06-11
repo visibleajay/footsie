@@ -2,23 +2,35 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/appReducer";
 
 export interface IPlayer {
-  [key: string]: string | number;
+  id: string;
+  flag_image: string;
+  player_name: string;
+  jersey_number: string;
+  height: string;
+  weight: string;
+  nationality: string;
+  starter: "Yes" | "No";
+  appearance: string;
+  minutes_played: string;
+  position: "Goalkeeper" | "Defender" | "Midfielder" | "Forward";
 }
 
 export interface IFormation {
-    Goalkeeper: string[];
-    Defender: string[];
-    Midfielder: string[];
-    Forward: string[];
+  Goalkeeper: string[];
+  Defender: string[];
+  Midfielder: string[];
+  Forward: string[];
 }
 
 export interface FootballManagerState {
-  players: IPlayer;
+  players: {
+    [key: string]: IPlayer;
+  }
   formation: IFormation;
 }
 
 const initialState: FootballManagerState = {
-  players: {} as IPlayer,
+  players: {},
   formation: {
     Goalkeeper: [],
     Defender: [],
@@ -34,7 +46,7 @@ export const footballManagerSlice = createSlice({
     populatePlayers: (state, action: PayloadAction<IPlayer[]>) => {
       // Normalize all players data and populater players field.
       const players = action.payload;
-      const playerObj: IPlayer = {};
+      const playerObj = {};
       const formation: IFormation = {
         Goalkeeper: [],
         Defender: [],
@@ -42,12 +54,12 @@ export const footballManagerSlice = createSlice({
         Forward: [],
       };
       players.forEach((player: IPlayer) => {
-        const randomId: string = Math.floor(
-          Math.random() * Math.floor(Math.random() * Date.now())
-        )+"";
+        const randomId: string =
+          Math.floor(Math.random() * Math.floor(Math.random() * Date.now())) +
+          "";
 
         const { starter = "", position } = player;
-        if ((starter+"").toLowerCase() === "yes") {
+        if ((starter + "").toLowerCase() === "yes") {
           formation[position as keyof typeof formation].push(randomId);
         }
 
@@ -57,15 +69,47 @@ export const footballManagerSlice = createSlice({
       state.players = playerObj;
       state.formation = formation;
     },
-    setFormation: (state, action: PayloadAction<{key: keyof IFormation; id: string}>) => {
-      const {formation} = state;
-      const {key, id} = action.payload;
-      state.formation = {...formation, [key]: [...formation[key], id]};
+    deletePlayer: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const { players } = state;
+      if (players[id]) {
+        delete players[id];
+        state.players = players;
+      }
+    },
+    setFormation: (
+      state,
+      action: PayloadAction<{ key: keyof IFormation; id: string }>
+    ) => {
+      const { formation } = state;
+      const { key, id } = action.payload;
+      state.formation = { ...formation, [key]: [...formation[key], id] };
     },
   },
 });
 
-export const selectPlayers = (state: RootState) => Object.values(state.footballManager.players || {});
+export const selectNationalities = (state: RootState) => {
+  const { players } = state.footballManager;
+  const nationalityObj = {};
+  // @ts-ignore
+  Object.values(players).forEach((player: IPlayer) => {
+    const { nationality, flag_image } = player;
+    // @ts-ignore
+    nationalityObj[nationality] = {
+      // @ts-ignore
+      nationality,
+      flagImage: flag_image,
+    };
+  });
+  return nationalityObj;
+};
+
+export const selectPlayers = (state: RootState) =>
+  Object.values(state.footballManager.players || {});
+
+export const selectPlayerInfo = (id: string) => (state: RootState) => {
+  return state.footballManager.players[id];
+};
 
 export const selectFormationCount = (state: RootState) => {
   const {
@@ -77,6 +121,10 @@ export const selectFormationCount = (state: RootState) => {
     Midfielder.length,
     Forward.length,
   ];
+};
+
+export const selectTableView = (state: RootState) => {
+  return Object.keys(state.footballManager.players || {}).length > 0;
 };
 
 export const footballManagerActions = {

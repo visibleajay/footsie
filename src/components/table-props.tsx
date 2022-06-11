@@ -31,14 +31,32 @@ const Input = styled.input`
   background: inherit;
 `;
 
-export default function TableProps({ onOpen }: { onOpen: () => void }) {
+const ImportButton = styled(ImportBTN)<{ isActive: boolean }>`
+  ${(p) =>
+    !p.isActive &&
+    `
+    border: 1px solid var(--bordersdefault);
+    background: none;
+    color: var(--textnormal);
+  `}
+`;
+
+export default function TableProps({
+  isFileUpload,
+  onOpen,
+}: {
+  isFileUpload: boolean;
+  onOpen: () => void;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <InputContainer>
         <FontAwesomeIcon icon={["fas", "magnifying-glass"]} />
         <Input placeholder="Find Player" />
       </InputContainer>
-      <ImportBTN onClick={onOpen}>Import Team</ImportBTN>
+      <ImportButton isActive={!isFileUpload} onClick={onOpen}>
+        {!isFileUpload ? "Import Team" : "Re-Import Team"}
+      </ImportButton>
     </div>
   );
 }

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useModal } from "../../context/ModalProvider";
 import { ImportBTN, ModalViewContainer } from "../../common/component";
 import { useAppDispatch } from "../../app/hooks";
 import {
@@ -98,36 +97,42 @@ const ImportButton = styled(ImportBTN)<{ isActive: boolean }>`
   `}
 `;
 
+const initialFileState = {
+  name: "",
+  error: false,
+  "Total Player": 0,
+  Goalkeeper: 0,
+  Defender: 0,
+  Midfielder: 0,
+  Forward: 0,
+};
+
 const ImportTableModal = ({
   isOpen,
-  setView,
+  onClose,
 }: {
   isOpen: boolean;
-  setView: () => void;
+  onClose: () => void;
 }) => {
   const fileModalRef = useRef(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [players, setPlayers] = useState<IPlayer[]>([]);
 
-  const [file, setFile] = useState({
-    name: "",
-    error: false,
-    "Total Player": 0,
-    Goalkeeper: 0,
-    Defender: 0,
-    Midfielder: 0,
-    Forward: 0,
-  });
+  const [file, setFile] = useState(initialFileState);
   const dispatch = useAppDispatch();
 
-  const {
-    showModal: isDisplay,
-    openModal: openFileModal,
-    closeModal,
-  } = useModal();
+  const [isDisplay, setState] = useState(false);
 
-  const processCSV = (str: string, delim = ",") => {
+  const setDisplay = (bool: boolean) => {
+    // Clear Out Modal State.
+    setFile(initialFileState);
+    setPlayers([]);
+    setState(bool);
+    if (bool === false) onClose();
+  };
+
+  const processCSV = (str: string, name: string, delim = ",") => {
     const headers = str
       .slice(0, str.indexOf("\n"))
       .split(delim)
@@ -161,23 +166,28 @@ const ImportTableModal = ({
         return eachPlayer;
       });
 
-      setPlayers(players);
-      setFile((s) => ({ ...s, ...position, "Total Player": players.length }));
+      setPlayers(players as IPlayer[]);
+      setFile((s) => ({
+        ...s,
+        name,
+        error: false,
+        ...position,
+        "Total Player": players.length,
+      }));
     } catch (e) {
-      setFile((s) => ({ ...s, error: true }));
+      setFile((s) => ({ ...initialFileState, name, error: true }));
     }
   };
 
   useEffect(() => {
-    if (isOpen) openFileModal();
+    if (isOpen) setDisplay(true);
   }, [isOpen]);
 
   return (
     <ModalContainer
       onClick={(e) => {
         if (fileModalRef.current === e.target) {
-          closeModal();
-          setView();
+          setDisplay(false);
         }
       }}
       isOpen={isDisplay}
@@ -195,8 +205,7 @@ const ImportTableModal = ({
             icon={["fas", "close"]}
             color="#CBCBCB"
             onClick={() => {
-              closeModal();
-              setView();
+              setDisplay(false);
             }}
           />
         </Heading>
@@ -224,11 +233,9 @@ const ImportTableModal = ({
                 const reader = new FileReader();
 
                 const { name } = file;
-                setFile((s) => ({ ...s, name }));
-
                 reader.onload = function (e) {
                   const text = (e.target as FileReader).result as string;
-                  processCSV(text || "");
+                  processCSV(text || "", name);
                 };
 
                 reader.readAsText(file);
@@ -291,8 +298,7 @@ const ImportTableModal = ({
             dispatch(
               footballManagerActions.populatePlayers(players as IPlayer[])
             );
-            closeModal();
-            setView();
+            setDisplay(false);
           }}
         >
           Import
