@@ -1,7 +1,11 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../app/hooks";
-import { selectFormationCount, selectPlayerInfo } from "../app/store/playerManagerSlice";
+import {
+  selectFormation,
+  selectPlayerInfo,
+} from "../app/store/playerManagerSlice";
+import FormationErrorModal from "./modals/formation-error-modal";
 import PlayerDetail from "./player-details";
 import PlayerName from "./player-name";
 
@@ -28,19 +32,19 @@ const Field = styled.div`
 const DefenderPosition = [
   {
     top: "12.5%",
-    left: "202px",
+    left: "192px",
   },
   {
     top: "37.5%",
-    left: "192px",
+    left: "182px",
   },
   {
     top: "62.5%",
-    left: "192px",
+    left: "182px",
   },
   {
     top: "87.5%",
-    left: "202px",
+    left: "192px",
   },
 ];
 
@@ -53,25 +57,32 @@ export default function PlayerOnField({
   isFileUpload: boolean;
 }) {
   const [totalGoalKeeper, totalDefender, totalMidfielder, totalForward] =
-    useAppSelector(selectFormationCount);
+    useAppSelector(selectFormation);
 
   const [playerId, setPlayerId] = useState<string>(totalGoalKeeper[0] || "");
 
   const player = useAppSelector(selectPlayerInfo(playerId));
 
+  const isDisplayDetail = useMemo(() => {
+    return (
+      totalGoalKeeper.length === 1 &&
+      totalDefender.length === 4 &&
+      totalMidfielder.length === 3 &&
+      totalForward.length === 3
+    );
+  }, [totalGoalKeeper, totalDefender, totalMidfielder, totalForward]);
+
   return (
-    <DetailContainer>
-      <Field>
-        {totalGoalKeeper === 1 &&
-          totalDefender === 4 &&
-          totalMidfielder === 3 &&
-          totalForward === 3 && (
+    <>
+      <DetailContainer>
+        <Field>
+          {isDisplayDetail && (
             <>
               <PlayerName
                 id={totalGoalKeeper[0]}
                 top={"50%"}
                 left={"50px"}
-                isActive={false}
+                isActive={playerId === totalGoalKeeper[0]}
                 onClick={() => {
                   setPlayerId(totalGoalKeeper[0]);
                 }}
@@ -82,7 +93,7 @@ export default function PlayerOnField({
                   id={defenderId}
                   top={DefenderPosition[index].top}
                   left={DefenderPosition[index].left}
-                  isActive={false}
+                  isActive={playerId === defenderId}
                   onClick={() => {
                     setPlayerId(defenderId);
                   }}
@@ -94,8 +105,8 @@ export default function PlayerOnField({
                   key={midfielderId}
                   id={midfielderId}
                   top={MidfielderPosition[index]}
-                  left={"50% - 16px"}
-                  isActive={false}
+                  left={"50% - 52px"}
+                  isActive={playerId === midfielderId}
                   onClick={() => {
                     setPlayerId(midfielderId);
                   }}
@@ -108,7 +119,7 @@ export default function PlayerOnField({
                   id={forwardId}
                   top={ForwardPosition[index]}
                   left={"70%"}
-                  isActive={false}
+                  isActive={playerId === forwardId}
                   onClick={() => {
                     setPlayerId(forwardId);
                   }}
@@ -116,8 +127,10 @@ export default function PlayerOnField({
               ))}
             </>
           )}
-      </Field>
-      <PlayerDetail isFileUpload={isFileUpload} {...player} />
-    </DetailContainer>
+        </Field>
+        <PlayerDetail isDisplay={isDisplayDetail} {...player} />
+      </DetailContainer>
+      <FormationErrorModal isFileUpload={isFileUpload} />
+    </>
   );
 }

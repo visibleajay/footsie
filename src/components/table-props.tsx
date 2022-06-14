@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -18,6 +18,7 @@ const InputContainer = styled.div`
     position: absolute;
     width: 0.875rem;
     left: 0.5rem;
+    cursor: pointer;
   }
 `;
 
@@ -47,22 +48,64 @@ const ImportButton = styled(ImportBTN)<{ isActive: boolean }>`
 
 export default function TableProps({
   isFileUpload,
-  setFilterValue,
+  onSearch,
   onOpen,
 }: {
   isFileUpload: boolean;
-  setFilterValue: (val: string) => void;
+  onSearch: (val: string) => void;
   onOpen: () => void;
 }) {
+  const [value, setFilterValue] = useState<string>("");
+  const [isSearched, setSearched] = useState<boolean>(false);
+
+  useEffect(() => {
+    // @ts-ignore
+    const escFunction = (event) => {
+      if (event.key === "Escape" && value.length) {
+        onSearch("");
+        setFilterValue("");
+        setSearched(false);
+      }
+    };
+    document.addEventListener("keydown", escFunction);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction);
+    };
+  }, [value]);
+
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <InputContainer>
-        <FontAwesomeIcon icon={["fas", "magnifying-glass"]} />
+        <FontAwesomeIcon
+          icon={["fas", isSearched ? "close" : "magnifying-glass"]}
+          onClick={() => {
+            if (value.length) {
+              if (isSearched) {
+                setFilterValue("");
+                onSearch("");
+                setSearched(false);
+              } else {
+                setSearched(true);
+                onSearch(value);
+              }
+            }
+          }}
+        />
         <Input
           readOnly={!isFileUpload}
           placeholder="Find Player"
+          value={value}
           onChange={(event) => {
             setFilterValue(event.target.value);
+          }}
+          onKeyUp={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.key === "Enter") {
+              setSearched(true);
+              onSearch(value);
+            }
           }}
         />
       </InputContainer>

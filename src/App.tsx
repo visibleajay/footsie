@@ -34,7 +34,6 @@ function App() {
   const isFileUpload = useAppSelector(selectTableView);
   const [filterVal, setFilterValue] = useState("");
 
-  console.log({isFileUpload});
   return (
     <ModalProvider>
       <AppContainer>
@@ -46,7 +45,7 @@ function App() {
               <TableProps
                 isFileUpload={isFileUpload}
                 onOpen={() => setView("importFile")}
-                setFilterValue={(val: string) => setFilterValue(val)}
+                onSearch={(val: string) => setFilterValue(val)}
               />
             )}
           </TopViewContainer>

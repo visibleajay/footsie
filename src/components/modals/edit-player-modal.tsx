@@ -170,8 +170,15 @@ export default function EditPlayerModal({
   const dispatch = useAppDispatch();
   const playerInfo = useAppSelector(selectPlayerInfo(id));
 
-  const [values, setValues] = useState<IPlayer>(playerInfo as IPlayer);
+  const [values, setValues] = useState<IPlayer>({} as IPlayer);
   const [isEdited, setEdited] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setDisplay(true);
+      setValues({ ...playerInfo });
+    }
+  }, [isOpen, playerInfo]);
 
   const onSubmit = () => {
     const {
@@ -200,15 +207,6 @@ export default function EditPlayerModal({
     );
     closeForm();
   };
-
-  // useEffect(() => {
-  //   if (isDisplay === true)
-  //   setValues({ ...playerInfo });
-  // }, [playerInfo]);
-
-  useEffect(() => {
-    if (isOpen) setDisplay(true);
-  }, [isOpen]);
 
   const closeForm = () => {
     setDisplay(false);

@@ -76,6 +76,15 @@ const HeightWeight = styled.div`
       font-size: 12px;
       color: var(--textnormal);
     }
+
+    .f {
+      display: flex;
+      align-items: center;
+
+      & > img {
+        margin-right: 10px;
+      }
+    }
   }
 `;
 
@@ -118,7 +127,7 @@ const BottomBlock = styled.div`
 `;
 
 export default function PlayerDetail({
-  isFileUpload = false,
+  isDisplay = false,
   player_name = "",
   player_image = "",
   jersey_number = "",
@@ -133,7 +142,7 @@ export default function PlayerDetail({
   goals = "",
   minutes_played,
 }: {
-  isFileUpload: boolean;
+  isDisplay: boolean;
   player_name: string;
   player_image: string;
   jersey_number: string;
@@ -150,7 +159,7 @@ export default function PlayerDetail({
 }) {
   return (
     <DetailView>
-      {isFileUpload && (
+      {isDisplay && (
         <>
           <Player>
             <div className="number">
@@ -172,10 +181,10 @@ export default function PlayerDetail({
               <span className="h">Weight</span>
               <span>{weight}</span>
             </div>
-            <div>
+            <div style={{ width: 120 }}>
               <span className="h">Nationality</span>
-              <span>
-                <img src={flag_image} alt="" width={24} height={24} />
+              <span className="f">
+                <img src={flag_image} alt="" width={16} height={16} />
                 {nationality}
               </span>
             </div>

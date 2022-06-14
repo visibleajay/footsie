@@ -138,8 +138,6 @@ const ImportTableModal = ({
       .split(delim)
       .map((header) => header.toLowerCase().trim().split(" ").join("_"));
     const rows = str.slice(str.indexOf("\n") + 1).split("\n");
-
-    console.log({ headers });
     try {
       const position = {
         Goalkeeper: 0,

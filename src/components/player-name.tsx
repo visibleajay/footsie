@@ -10,6 +10,7 @@ const PlayerNameContainer = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
+  align-items: center;
   position: absolute;
   top: ${(p) => `calc(${p.top})`};
   left: ${(p) => `calc(${p.left})`};

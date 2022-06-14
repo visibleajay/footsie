@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../appReducer";
 
 export interface IPlayer {
@@ -46,7 +46,11 @@ export const playerManagerSlice = createSlice({
           Math.floor(Math.random() * Math.floor(Math.random() * Date.now())) +
           "";
         // @ts-ignore
-        playerObj[randomId + ""] = { ...player, id: randomId + "" };
+        playerObj[randomId + ""] = {
+          ...player,
+          player_image: player.player_image.replace(/["']/g, ""),
+          id: randomId + "",
+        };
       });
       return playerObj;
     },
@@ -59,7 +63,7 @@ export const playerManagerSlice = createSlice({
       if (state[id]) {
         delete state[id];
       }
-    }
+    },
   },
 });
 
@@ -84,7 +88,7 @@ export const selectPlayerInfo = (id: string) => (state: RootState) => {
   return state.playerManager[id] || {};
 };
 
-export const selectFormationCount = (state: RootState) => {
+export const selectFormation = (state: RootState) => {
   const formation: IFormation = {
     Goalkeeper: [],
     Defender: [],
@@ -97,9 +101,15 @@ export const selectFormationCount = (state: RootState) => {
       formation[position as keyof typeof formation].push(id);
     }
   });
-  console.log("inside formation count");
   return Object.values(formation || {});
 };
+
+export const selectFormationCount = createSelector(
+  selectFormation,
+  (formation: Array<number[]>) => {
+    return formation.map((form) => form.length);
+  }
+);
 
 export const selectTableView = (state: RootState) => {
   return Object.keys(state.playerManager || {}).length > 0;
