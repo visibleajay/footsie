@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ImportBTN, ModalViewContainer } from "../../common/component";
 import { useAppDispatch } from "../../app/hooks";
 import {
-  footballManagerActions,
+  playerManagerActions,
   IPlayer,
-} from "../../app/store/footballManagerSlice";
+} from "../../app/store/playerManagerSlice";
 
 const ModalContainer = styled.div<{ isOpen: boolean }>`
   display: ${(p) => (p.isOpen ? "flex" : "none")};
@@ -139,6 +139,7 @@ const ImportTableModal = ({
       .map((header) => header.toLowerCase().trim().split(" ").join("_"));
     const rows = str.slice(str.indexOf("\n") + 1).split("\n");
 
+    console.log({ headers });
     try {
       const position = {
         Goalkeeper: 0,
@@ -296,7 +297,7 @@ const ImportTableModal = ({
           isActive={!file.error && file.name.length > 0}
           onClick={() => {
             dispatch(
-              footballManagerActions.populatePlayers(players as IPlayer[])
+              playerManagerActions.populatePlayers(players as IPlayer[])
             );
             setDisplay(false);
           }}

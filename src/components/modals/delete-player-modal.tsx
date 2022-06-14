@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ModalViewContainer } from "../../common/component";
 import { useAppDispatch } from "../../app/hooks";
-import { footballManagerActions } from "../../app/store/footballManagerSlice";
+import { playerManagerActions } from "../../app/store/playerManagerSlice";
 
 const ModalContainer = styled.div<{ isOpen: boolean }>`
   display: ${(p) => (p.isOpen ? "flex" : "none")};
@@ -112,7 +112,7 @@ export default function DeletePlayerModal({
           </CancelButton>
           <Button
             onClick={() => {
-              dispatch(footballManagerActions.deletePlayer(id));
+              dispatch(playerManagerActions.deletePlayer(id));
               setDisplay(false);
             }}
           >

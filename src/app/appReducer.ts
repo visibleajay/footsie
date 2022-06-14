@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import footballManagerReducer from './store/footballManagerSlice';
+import playerManagerReducer from './store/playerManagerSlice';
 
 export const store = configureStore({
   reducer: {
-    footballManager: footballManagerReducer
+    playerManager: playerManagerReducer
   },
 });
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "./app/hooks";
-import { selectTableView } from "./app/store/footballManagerSlice";
+import { selectTableView } from "./app/store/playerManagerSlice";
 import ImportTableModal from "./components/modals/import-table-modal";
 import Navigation from "./components/navigation";
 import PlayerOnField from "./components/player-on-field";
@@ -34,6 +34,7 @@ function App() {
   const isFileUpload = useAppSelector(selectTableView);
   const [filterVal, setFilterValue] = useState("");
 
+  console.log({isFileUpload});
   return (
     <ModalProvider>
       <AppContainer>

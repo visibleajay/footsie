@@ -10,7 +10,7 @@ import {
   IdType,
 } from "react-table";
 import { useAppSelector } from "../app/hooks";
-import { IPlayer, selectPlayers } from "../app/store/footballManagerSlice";
+import { IPlayer, selectPlayers } from "../app/store/playerManagerSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ActionModal from "./modals/action-modal";
 import EditPlayerModal from "./modals/edit-player-modal";
@@ -173,6 +173,7 @@ export default function Table({
     setGlobalFilter,
   } = useTable(
     {
+      // @ts-ignore
       columns,
       // @ts-ignore
       data: players,

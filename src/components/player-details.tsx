@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { IPlayer } from "../app/store/footballManagerSlice";
 
 const DetailView = styled.div`
+  position: relative;
   height: 100%;
   background: var(--neutralbackground-1);
   border-radius: 4px;
@@ -81,8 +81,10 @@ const HeightWeight = styled.div`
 
 const Separator = styled.div`
   border: 1px solid #494949;
-  margin: 0px 24px;
-  height: 1px;
+  position: absolute;
+  top: 360px;
+  left: 24px;
+  width: calc(100% - 48px);
 `;
 
 const BottomBlock = styled.div`
@@ -94,6 +96,7 @@ const BottomBlock = styled.div`
   font-size: 12px;
   font-weight: 400;
   color: var(--textnormal);
+  justify-content: space-between;
 
   div {
     display: flex;
@@ -115,61 +118,96 @@ const BottomBlock = styled.div`
 `;
 
 export default function PlayerDetail({
-  player_image,
-  jersey_number,
-}: Partial<IPlayer>) {
+  isFileUpload = false,
+  player_name = "",
+  player_image = "",
+  jersey_number = "",
+  position = "",
+  height = "",
+  weight = "",
+  nationality = "",
+  flag_image = "",
+  appearances = "",
+  clean_sheets = "",
+  saves = "",
+  goals = "",
+  minutes_played,
+}: {
+  isFileUpload: boolean;
+  player_name: string;
+  player_image: string;
+  jersey_number: string;
+  position: string;
+  height: string;
+  weight: string;
+  nationality: string;
+  flag_image: string;
+  appearances: string;
+  clean_sheets: string;
+  saves: string;
+  goals: string;
+  minutes_played: string;
+}) {
   return (
     <DetailView>
-      <Player>
-        <div className="number">
-          <span className="big">1</span>
-          <span className="small">1</span>
-        </div>
-        <img src={player_image} alt="" style={{ height: 258 }} />
-        <span className="name">
-          <span className="n">Keylor Navas</span>
-          <span className="p">Goalkeeper</span>
-        </span>
-      </Player>
-      <HeightWeight>
-        <div>
-          <span className="h">Height</span>
-          <span>1.87m</span>
-        </div>
-        <div>
-          <span className="h">Weight</span>
-          <span>1.87m</span>
-        </div>
-        <div>
-          <span className="h">Nationality</span>
-          <span>Costa Rica</span>
-        </div>
-      </HeightWeight>
+      {isFileUpload && (
+        <>
+          <Player>
+            <div className="number">
+              <span className="big">{jersey_number}</span>
+              <span className="small">{jersey_number}</span>
+            </div>
+            <img src={player_image} alt="" style={{ height: 258 }} />
+            <span className="name">
+              <span className="n">{player_name}</span>
+              <span className="p">{position}</span>
+            </span>
+          </Player>
+          <HeightWeight>
+            <div>
+              <span className="h">Height</span>
+              <span>{height}</span>
+            </div>
+            <div>
+              <span className="h">Weight</span>
+              <span>{weight}</span>
+            </div>
+            <div>
+              <span className="h">Nationality</span>
+              <span>
+                <img src={flag_image} alt="" width={24} height={24} />
+                {nationality}
+              </span>
+            </div>
+          </HeightWeight>
+
+          <BottomBlock>
+            <div>
+              <div>
+                <span className="h">{appearances}</span>
+                <span>Appearances</span>
+              </div>
+
+              <div>
+                <span className="h">{clean_sheets}</span>
+                <span>Clean Sheets</span>
+              </div>
+            </div>
+            <div style={{ paddingRight: 48 }}>
+              <div>
+                <span className="h">{minutes_played}</span>
+                <span>Minutes Played</span>
+              </div>
+
+              <div>
+                <span className="h">{saves}</span>
+                <span>Saves</span>
+              </div>
+            </div>
+          </BottomBlock>
+        </>
+      )}
       <Separator></Separator>
-      <BottomBlock>
-        <div>
-          <div>
-            <span className="h">26</span>
-            <span>Appearances</span>
-          </div>
-
-          <div>
-            <span className="h">10</span>
-            <span>Clean Sheets</span>
-          </div>
-        </div>
-        <div style={{ paddingLeft: 48 }}>
-          <div>
-            <span className="h">2308</span>
-            <span>Minutes Played</span>
-          </div>
-
-          <div>
-            <span className="h">8</span>
-            <span>Saves</span>
-          </div>
-        </div>
-      </BottomBlock>
     </DetailView>
   );
 }

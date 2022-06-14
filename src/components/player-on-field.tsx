@@ -1,8 +1,9 @@
-import React from "react";
+import React, { forwardRef, useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../app/hooks";
-import { selectFormationCount } from "../app/store/footballManagerSlice";
+import { selectFormationCount, selectPlayerInfo } from "../app/store/playerManagerSlice";
 import PlayerDetail from "./player-details";
+import PlayerName from "./player-name";
 
 const DetailContainer = styled.div`
   display: flex;
@@ -24,36 +25,27 @@ const Field = styled.div`
   flex: 5;
 `;
 
-const PlayerNameContainer = styled.div<{
-  top: string;
-  left: string;
-  isActive: boolean;
-}>`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: ${(p) => `calc(${p.top})`};
-  left: ${(p) => `calc(${p.left})`};
-  font-weight: 500;
-  color: var(--textheadings);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  text-transform: capitalize;
-  cursor: pointer;
+const DefenderPosition = [
+  {
+    top: "12.5%",
+    left: "202px",
+  },
+  {
+    top: "37.5%",
+    left: "192px",
+  },
+  {
+    top: "62.5%",
+    left: "192px",
+  },
+  {
+    top: "87.5%",
+    left: "202px",
+  },
+];
 
-  span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(
-      ${(p) => (p.isActive ? "--primaryorange" : "--neutralbackground-2")}
-    );
-    font-weight: 500;
-  }
-`;
+const MidfielderPosition = ["20.5%", "52%", "77.5%"];
+const ForwardPosition = ["22.5%", "52%", "81.5%"];
 
 export default function PlayerOnField({
   isFileUpload,
@@ -63,157 +55,69 @@ export default function PlayerOnField({
   const [totalGoalKeeper, totalDefender, totalMidfielder, totalForward] =
     useAppSelector(selectFormationCount);
 
-  console.log({
-    totalGoalKeeper,
-    totalDefender,
-    totalMidfielder,
-    totalForward,
-  });
+  const [playerId, setPlayerId] = useState<string>(totalGoalKeeper[0] || "");
+
+  const player = useAppSelector(selectPlayerInfo(playerId));
 
   return (
     <DetailContainer>
       <Field>
-        <PlayerName
-          name="ajay"
-          jersey_number={"1"}
-          top={"50%"}
-          left={"50px"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="vijay"
-          jersey_number={"50"}
-          top={"12.5%"}
-          left={"202px"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="jay"
-          jersey_number={"15"}
-          top={"37.5%"}
-          left={"192px"}
-          isActive={true}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="stong"
-          jersey_number={"76"}
-          top={"62.5%"}
-          left={"192px"}
-          isActive={true}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"87.5%"}
-          left={"202px"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"20.5%"}
-          left={"50% - 16px"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"52%"}
-          left={"50% - 16px"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"77.5%"}
-          left={"50% - 16px"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
+        {totalGoalKeeper === 1 &&
+          totalDefender === 4 &&
+          totalMidfielder === 3 &&
+          totalForward === 3 && (
+            <>
+              <PlayerName
+                id={totalGoalKeeper[0]}
+                top={"50%"}
+                left={"50px"}
+                isActive={false}
+                onClick={() => {
+                  setPlayerId(totalGoalKeeper[0]);
+                }}
+              />
+              {totalDefender.map((defenderId: string, index: number) => (
+                <PlayerName
+                  key={defenderId}
+                  id={defenderId}
+                  top={DefenderPosition[index].top}
+                  left={DefenderPosition[index].left}
+                  isActive={false}
+                  onClick={() => {
+                    setPlayerId(defenderId);
+                  }}
+                />
+              ))}
 
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"22.5%"}
-          left={"70%"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
+              {totalMidfielder.map((midfielderId: string, index: number) => (
+                <PlayerName
+                  key={midfielderId}
+                  id={midfielderId}
+                  top={MidfielderPosition[index]}
+                  left={"50% - 16px"}
+                  isActive={false}
+                  onClick={() => {
+                    setPlayerId(midfielderId);
+                  }}
+                />
+              ))}
 
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"52%"}
-          left={"70%"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
-
-        <PlayerName
-          name="sanjay"
-          jersey_number={"87"}
-          top={"82%"}
-          left={"70%"}
-          isActive={false}
-          onClick={() => {
-            console.log("inside rock");
-          }}
-        />
+              {totalForward.map((forwardId: string, index: number) => (
+                <PlayerName
+                  key={forwardId}
+                  id={forwardId}
+                  top={ForwardPosition[index]}
+                  left={"70%"}
+                  isActive={false}
+                  onClick={() => {
+                    setPlayerId(forwardId);
+                  }}
+                />
+              ))}
+            </>
+          )}
       </Field>
-      <PlayerDetail
-        player_image="https://images.psg.media/media/207194/card_21-22_gharbi.png?center=0.5,0.5&mode=crop&width=400&height=600&quality=75"
-        jersey_number="1"
-      />
+      <PlayerDetail isFileUpload={isFileUpload} {...player} />
     </DetailContainer>
   );
 }
-
-const PlayerName = ({
-  name,
-  jersey_number,
-  top,
-  left,
-  isActive,
-  onClick = () => {},
-}: {
-  name: string;
-  jersey_number: string;
-  isActive: boolean;
-  top: string;
-  left: string;
-  onClick: () => void;
-}) => {
-  return (
-    <PlayerNameContainer {...{ top, left, isActive }} onClick={onClick}>
-      <span>{jersey_number}</span>
-      {name}
-    </PlayerNameContainer>
-  );
-};

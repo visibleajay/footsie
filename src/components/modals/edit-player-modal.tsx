@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  footballManagerActions,
+  playerManagerActions,
   IPlayer,
   selectNationalities,
   selectPlayerInfo,
-} from "../../app/store/footballManagerSlice";
+} from "../../app/store/playerManagerSlice";
 
 import { ImportBTN, ModalViewContainer } from "../../common/component";
 
@@ -170,7 +170,7 @@ export default function EditPlayerModal({
   const dispatch = useAppDispatch();
   const playerInfo = useAppSelector(selectPlayerInfo(id));
 
-  const [values, setValues] = useState<IPlayer>({} as IPlayer);
+  const [values, setValues] = useState<IPlayer>(playerInfo as IPlayer);
   const [isEdited, setEdited] = useState<boolean>(false);
 
   const onSubmit = () => {
@@ -185,7 +185,7 @@ export default function EditPlayerModal({
     // @ts-ignore
     const { flagImage } = nationalities[nationality];
     dispatch(
-      footballManagerActions.updatePlayer({
+      playerManagerActions.updatePlayer({
         ...playerInfo,
         player_name: player_name || "Unknown",
         jersey_number: isNaN(+jersey_number)
@@ -201,9 +201,10 @@ export default function EditPlayerModal({
     closeForm();
   };
 
-  useEffect(() => {
-    setValues({ ...playerInfo });
-  }, [playerInfo]);
+  // useEffect(() => {
+  //   if (isDisplay === true)
+  //   setValues({ ...playerInfo });
+  // }, [playerInfo]);
 
   useEffect(() => {
     if (isOpen) setDisplay(true);
