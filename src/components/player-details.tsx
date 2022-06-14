@@ -1,4 +1,5 @@
 import React from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 
 const DetailView = styled.div`
@@ -140,7 +141,8 @@ export default function PlayerDetail({
   clean_sheets = "",
   saves = "",
   goals = "",
-  minutes_played,
+  minutes_played = "",
+  assists = "",
 }: {
   isDisplay: boolean;
   player_name: string;
@@ -156,7 +158,11 @@ export default function PlayerDetail({
   saves: string;
   goals: string;
   minutes_played: string;
+  assists: string;
 }) {
+  const isGoalie = useMemo(() => {
+    return clean_sheets !== "N/A" || saves !== "N/A";
+  }, [clean_sheets, saves]);
   return (
     <DetailView>
       {isDisplay && (
@@ -198,8 +204,17 @@ export default function PlayerDetail({
               </div>
 
               <div>
-                <span className="h">{clean_sheets}</span>
-                <span>Clean Sheets</span>
+                {isGoalie ? (
+                  <>
+                    <span className="h">{clean_sheets}</span>
+                    <span>Clean Sheets</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="h">{goals}</span>
+                    <span>Goals</span>
+                  </>
+                )}
               </div>
             </div>
             <div style={{ paddingRight: 48 }}>
@@ -209,8 +224,17 @@ export default function PlayerDetail({
               </div>
 
               <div>
-                <span className="h">{saves}</span>
-                <span>Saves</span>
+                {isGoalie ? (
+                  <>
+                    <span className="h">{saves}</span>
+                    <span>Saves</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="h">{assists}</span>
+                    <span>Assits</span>
+                  </>
+                )}
               </div>
             </div>
           </BottomBlock>

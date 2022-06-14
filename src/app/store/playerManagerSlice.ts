@@ -18,6 +18,7 @@ export interface IPlayer {
   clean_sheets: string;
   saves: string;
   goals: string;
+  assists: string;
 }
 
 export interface IFormation {
