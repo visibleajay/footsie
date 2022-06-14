@@ -17,8 +17,7 @@ const AppContainer = styled.div`
 
 const RightViewContainer = styled.div`
   flex: 1;
-  padding-left: 20px;
-  padding-right: 40px;
+  padding: 0px 40px;
 `;
 
 const TopViewContainer = styled.div`
@@ -33,8 +32,8 @@ function App() {
   const [view, setView] = useState<"table" | "detail" | "importFile">("table");
 
   const isFileUpload = useAppSelector(selectTableView);
+  const [filterVal, setFilterValue] = useState("");
 
-  console.log({ isFileUpload });
   return (
     <ModalProvider>
       <AppContainer>
@@ -42,13 +41,16 @@ function App() {
         <RightViewContainer style={{ flex: 1 }}>
           <TopViewContainer>
             <TeamName />
-            <TableProps
-              isFileUpload={isFileUpload}
-              onOpen={() => setView("importFile")}
-            />
+            {view === "table" && (
+              <TableProps
+                isFileUpload={isFileUpload}
+                onOpen={() => setView("importFile")}
+                setFilterValue={(val: string) => setFilterValue(val)}
+              />
+            )}
           </TopViewContainer>
           {(view === "table" || view === "importFile") && (
-            <Table isFileUpload={isFileUpload} />
+            <Table isFileUpload={isFileUpload} filterValue={filterVal} />
           )}
           {view === "detail" && <PlayerOnField isFileUpload={isFileUpload} />}
           <ImportTableModal

@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 
-import { CellProps, Column, useTable } from "react-table";
+import {
+  CellProps,
+  Column,
+  useTable,
+  useGlobalFilter,
+  Row,
+  IdType,
+} from "react-table";
 import { useAppSelector } from "../app/hooks";
 import { IPlayer, selectPlayers } from "../app/store/footballManagerSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,7 +42,13 @@ const NoImportBody = styled.div`
   text-align: center;
 `;
 
-export default function Table({ isFileUpload }: { isFileUpload: boolean }) {
+export default function Table({
+  isFileUpload,
+  filterValue,
+}: {
+  isFileUpload: boolean;
+  filterValue: string;
+}) {
   const columns: Column<IPlayer>[] = React.useMemo(
     () => [
       {
@@ -86,9 +99,9 @@ export default function Table({ isFileUpload }: { isFileUpload: boolean }) {
         id: "nationality",
       },
       {
-        Header: "Appearance",
-        accessor: "appearance" as keyof IPlayer,
-        id: "appearance",
+        Header: "Appearances",
+        accessor: "appearances" as keyof IPlayer,
+        id: "appearances",
       },
       {
         Header: "Minutes Played",
@@ -132,6 +145,23 @@ export default function Table({ isFileUpload }: { isFileUpload: boolean }) {
 
   const players = useAppSelector(selectPlayers);
 
+  const ourGlobalFilterFunction = useCallback(
+    (rows: Row<IPlayer>[], ids: IdType<IPlayer>[], query: string) => {
+      const lQuery = query.toLowerCase();
+      return rows.filter((row) => {
+        const {
+          player_name = "",
+          position = "",
+          nationality = "",
+        } = row.original;
+        return player_name?.toLowerCase().includes(lQuery) ||
+          position?.toLowerCase().includes(lQuery) ||
+          nationality?.toLowerCase().includes(lQuery);
+      });
+    },
+    []
+  );
+
   const {
     getTableProps, // table props from react-table
     getTableBodyProps, // table body props from react-table
@@ -139,11 +169,18 @@ export default function Table({ isFileUpload }: { isFileUpload: boolean }) {
     rows, // rows for the table based on the data passed
     prepareRow,
     setHiddenColumns,
-  } = useTable({
-    columns,
     // @ts-ignore
-    data: players,
-  });
+    setGlobalFilter,
+  } = useTable(
+    {
+      columns,
+      // @ts-ignore
+      data: players,
+      // @ts-ignore
+      globalFilter: ourGlobalFilterFunction,
+    },
+    useGlobalFilter
+  );
   const [operation, setOperation] = useState<{
     name: "close" | "edit" | "delete";
     id: string;
@@ -151,9 +188,13 @@ export default function Table({ isFileUpload }: { isFileUpload: boolean }) {
 
   useEffect(() => {
     setHiddenColumns(
-      !isFileUpload ? ["starter", "appearance", "minutes_played"] : []
+      !isFileUpload ? ["starter", "appearances", "minutes_played"] : []
     );
   }, [isFileUpload, setHiddenColumns]);
+
+  useEffect(() => {
+    setGlobalFilter(filterValue);
+  }, [filterValue]);
 
   return (
     <>

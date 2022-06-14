@@ -2,12 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useForm, Controller } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers";
-// import * as yup from "yup";
-
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+  footballManagerActions,
   IPlayer,
   selectNationalities,
   selectPlayerInfo,
@@ -89,6 +86,10 @@ const ElementContainer = styled.div`
     color: var(--textmuted);
   }
 
+  & > input:focus {
+    color: var(--textnormal);
+  }
+
   & > select {
     width: 100%;
     appearance: none;
@@ -166,14 +167,38 @@ export default function EditPlayerModal({
   const editModalRef = useRef(null);
   const [isDisplay, setDisplay] = useState(false);
   const nationalities = useAppSelector(selectNationalities);
-
+  const dispatch = useAppDispatch();
   const playerInfo = useAppSelector(selectPlayerInfo(id));
 
   const [values, setValues] = useState<IPlayer>({} as IPlayer);
   const [isEdited, setEdited] = useState<boolean>(false);
 
   const onSubmit = () => {
-    console.log({ values });
+    const {
+      player_name = "Unknown",
+      jersey_number = "Unknown",
+      nationality,
+      height = "Unknown",
+      weight = "Unknown",
+      starter,
+    } = values;
+    // @ts-ignore
+    const { flagImage } = nationalities[nationality];
+    dispatch(
+      footballManagerActions.updatePlayer({
+        ...playerInfo,
+        player_name: player_name || "Unknown",
+        jersey_number: isNaN(+jersey_number)
+          ? "Unknown"
+          : jersey_number || "Unknown",
+        nationality,
+        flag_image: flagImage,
+        height: isNaN(+height) ? "Unknown" : height || "Unknown",
+        weight: isNaN(+weight) ? "Unknown" : weight || "Unknown",
+        starter,
+      })
+    );
+    closeForm();
   };
 
   useEffect(() => {
@@ -184,13 +209,19 @@ export default function EditPlayerModal({
     if (isOpen) setDisplay(true);
   }, [isOpen]);
 
+  const closeForm = () => {
+    setDisplay(false);
+    setValues({} as IPlayer);
+    setEdited(false);
+    onClose();
+  };
+
   return (
     <ModalContainer
       ref={editModalRef}
       onClick={(e) => {
         if (editModalRef.current === e.target) {
-          setDisplay(false);
-          onClose();
+          closeForm();
         }
       }}
       isOpen={isDisplay}
@@ -202,8 +233,7 @@ export default function EditPlayerModal({
             icon={["fas", "close"]}
             style={{ height: 16, width: 10, cursor: "pointer" }}
             onClick={() => {
-              setDisplay(false);
-              onClose();
+              closeForm();
             }}
           />
         </div>

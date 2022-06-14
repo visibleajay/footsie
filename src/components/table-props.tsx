@@ -1,7 +1,7 @@
 import React from "react";
+import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import styled from "styled-components";
 import { ImportBTN } from "../common/component";
 
 const InputContainer = styled.div`
@@ -29,6 +29,10 @@ const Input = styled.input`
   border: none;
   outline: none;
   background: inherit;
+
+  &:focus {
+    color: var(--textnormal);
+  }
 `;
 
 const ImportButton = styled(ImportBTN)<{ isActive: boolean }>`
@@ -43,16 +47,24 @@ const ImportButton = styled(ImportBTN)<{ isActive: boolean }>`
 
 export default function TableProps({
   isFileUpload,
+  setFilterValue,
   onOpen,
 }: {
   isFileUpload: boolean;
+  setFilterValue: (val: string) => void;
   onOpen: () => void;
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <InputContainer>
         <FontAwesomeIcon icon={["fas", "magnifying-glass"]} />
-        <Input placeholder="Find Player" />
+        <Input
+          readOnly={!isFileUpload}
+          placeholder="Find Player"
+          onChange={(event) => {
+            setFilterValue(event.target.value);
+          }}
+        />
       </InputContainer>
       <ImportButton isActive={!isFileUpload} onClick={onOpen}>
         {!isFileUpload ? "Import Team" : "Re-Import Team"}

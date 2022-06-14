@@ -10,9 +10,10 @@ export interface IPlayer {
   weight: string;
   nationality: string;
   starter: "Yes" | "No";
-  appearance: string;
+  appearances: string;
   minutes_played: string;
   position: "Goalkeeper" | "Defender" | "Midfielder" | "Forward";
+  player_image: string;
 }
 
 export interface IFormation {
@@ -59,7 +60,7 @@ export const footballManagerSlice = createSlice({
           "";
 
         const { starter = "", position } = player;
-        if ((starter + "").toLowerCase() === "yes") {
+        if (starter === "Yes") {
           formation[position as keyof typeof formation].push(randomId);
         }
 
@@ -68,6 +69,10 @@ export const footballManagerSlice = createSlice({
       });
       state.players = playerObj;
       state.formation = formation;
+    },
+    updatePlayer: (state, action: PayloadAction<IPlayer>) => {
+      const {id} = action.payload;
+      state.players[id] = action.payload;
     },
     deletePlayer: (state, action: PayloadAction<string>) => {
       const id = action.payload;
