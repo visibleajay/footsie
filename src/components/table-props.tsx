@@ -81,14 +81,13 @@ export default function TableProps({
           icon={["fas", isSearched ? "close" : "magnifying-glass"]}
           onClick={() => {
             if (value.length) {
-              if (isSearched) {
+              if (!isSearched) {
+                onSearch(value);
+              } else {
                 setFilterValue("");
                 onSearch("");
-                setSearched(false);
-              } else {
-                setSearched(true);
-                onSearch(value);
               }
+              setSearched(!isSearched);
             }
           }}
         />
@@ -98,12 +97,15 @@ export default function TableProps({
           value={value}
           onChange={(event) => {
             setFilterValue(event.target.value);
+            if (event.target.value === "") {
+              setSearched(false);
+            }
           }}
           onKeyUp={(event) => {
             event.preventDefault();
             event.stopPropagation();
             if (event.key === "Enter") {
-              setSearched(true);
+              if (value.length) setSearched(true);
               onSearch(value);
             }
           }}

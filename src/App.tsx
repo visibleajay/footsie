@@ -41,7 +41,7 @@ function App() {
         <RightViewContainer style={{ flex: 1 }}>
           <TopViewContainer>
             <TeamName />
-            {view === "table" && (
+            {(view === "table" || view === "importFile") && (
               <TableProps
                 isFileUpload={isFileUpload}
                 onOpen={() => setView("importFile")}

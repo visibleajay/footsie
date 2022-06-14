@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ActionModal from "./modals/action-modal";
 import EditPlayerModal from "./modals/edit-player-modal";
 import DeletePlayerModal from "./modals/delete-player-modal";
+import { formatHeight, formatWeight } from "../common/utils";
 
 const TableContainer = styled.div`
   display: flex;
@@ -85,12 +86,16 @@ export default function Table({
       },
       {
         Header: "Height",
-        accessor: "height" as keyof IPlayer,
+        Cell: ({ row }: CellProps<IPlayer>) => {
+          return <span>{formatHeight(row.original?.height || "")}</span>;
+        },
         id: "height",
       },
       {
         Header: "Weight",
-        accessor: "weight" as keyof IPlayer,
+        Cell: ({ row }: CellProps<IPlayer>) => {
+          return <span>{formatWeight(row.original?.weight || "")}</span>;
+        },
         id: "weight",
       },
       {
@@ -140,7 +145,7 @@ export default function Table({
         id: "action",
       },
     ],
-    []
+    [formatHeight, formatWeight]
   );
 
   const players = useAppSelector(selectPlayers);
@@ -154,9 +159,11 @@ export default function Table({
           position = "",
           nationality = "",
         } = row.original;
-        return player_name?.toLowerCase().includes(lQuery) ||
+        return (
+          player_name?.toLowerCase().includes(lQuery) ||
           position?.toLowerCase().includes(lQuery) ||
-          nationality?.toLowerCase().includes(lQuery);
+          nationality?.toLowerCase().includes(lQuery)
+        );
       });
     },
     []
@@ -195,7 +202,7 @@ export default function Table({
 
   useEffect(() => {
     setGlobalFilter(filterValue);
-  }, [filterValue]);
+  }, [filterValue, players]);
 
   return (
     <>

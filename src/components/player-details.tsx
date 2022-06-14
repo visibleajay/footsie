@@ -1,6 +1,7 @@
 import React from "react";
 import { useMemo } from "react";
 import styled from "styled-components";
+import { formatHeight, formatWeight } from "../common/utils";
 
 const DetailView = styled.div`
   position: relative;
@@ -81,7 +82,10 @@ const HeightWeight = styled.div`
     .f {
       display: flex;
       align-items: center;
-
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      
       & > img {
         margin-right: 10px;
       }
@@ -181,11 +185,11 @@ export default function PlayerDetail({
           <HeightWeight>
             <div>
               <span className="h">Height</span>
-              <span>{height}</span>
+              <span>{formatHeight(height || "")}</span>
             </div>
             <div>
               <span className="h">Weight</span>
-              <span>{weight}</span>
+              <span>{formatWeight(weight || "")}</span>
             </div>
             <div style={{ width: 120 }}>
               <span className="h">Nationality</span>
